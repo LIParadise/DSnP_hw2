@@ -7,6 +7,7 @@
 ****************************************************************************/
 #include <cassert>
 #include <cstring>
+#include <cctype>        // isspace()
 #include "cmdParser.h"
 
 using namespace std;
@@ -218,20 +219,44 @@ bool CmdParser::deleteChar()
 //
 void CmdParser::insertChar(char ch, int repeat)
 {
-  // TODO...
+  // TODO... done
   assert(repeat >= 1);
 
-  // we'll update screen first, and then deal with buffer.
+  // If (repeat) characters would cause buffer to explode,
+  // reduce repeat so that they could fit in READ_BUF_SIZE as a cstring,
+  // and then beep().
+  // We'll update screen first, and then deal with buffer.
+
+  // confine (repeat) size.
+  int remaining = READ_BUF_SIZE - ( _readBufEnd - _readBuf ) - 1;
+  if( repeat > remaining ){
+    mybeep();
+    repeat = remaining;
+    if( repeat == 0 ){
+      return ;
+    }
+  }
 
   // update screen.
-  for( int i = repeat; repeat > 0; repeat -- ){
+  for( int i = 0; i < repeat; i++ ){
     cout << ch;
   }
   for( char* ptr = _readBufPtr; ptr < _readBufEnd; ptr ++ ){
     cout << *ptr;
   }
   cout << flush;
-  
+
+  // maintain buffer.
+  memmove( _readBufPtr+repeat, _readBufPtr, 
+      sizeof(char) * ( _readBufEnd - _readBufPtr ) );
+  for( int i = 0; i < repeat; i++ ){
+    *_readBufPtr = ch;
+    _readBufPtr ++;
+  }
+  _readBufEnd = _readBufEnd + repeat;
+  *_readBufEnd = 0;
+  assert( (_readBufEnd - _readBuf ) < (READ_BUF_SIZE) );
+
 }
 
 // 1. Delete the line that is currently shown on the screen
@@ -250,7 +275,20 @@ void CmdParser::insertChar(char ch, int repeat)
 //
 void CmdParser::deleteLine()
 {
-  // TODO...
+  // TODO... done
+  moveBufPtr( _readBuf );
+  for( int i = 0; i <= ( _readBufEnd - _readBuf ); i++ ){
+    cout << ' ';
+  }
+  cout << flush;
+  for( int i = 0; i <= ( _readBufEnd - _readBuf ); i++ ){
+    cout << (char)8 ; 
+  }
+  cout << flush;
+  _readBufEnd = _readBuf;
+  _readBufPtr = _readBuf;
+  memset( _readBuf, 0, sizeof(char) * READ_BUF_SIZE );
+  
 }
 
 // This functions moves _historyIdx to index and display _history[index]
@@ -273,7 +311,42 @@ void CmdParser::deleteLine()
 //
 void CmdParser::moveToHistory(int index)
 {
-  // TODO...
+  // TODO... done
+
+  if( index < _historyIdx ){
+    // moving up...
+
+    if( _historyIdx == 0 ){
+      mybeep();
+      return;
+    }else if( index < 0 ){
+      index = 0;
+    }
+    _tempCmdStored = true;
+    _history.push_back( (string) _readBuf );
+
+  }else if( index > _historyIdx ){
+    // moving down...
+    if( _historyIdx == _history.size() ){
+      mybeep();
+      assert( _tempCmdStored == false );
+    }else{
+      assert( _tempCmdStored == true  );
+    }
+
+    if( _historyIdx == _history.size() - 1 ){
+      mybeep();
+      return;
+    }else if( index >= _history.size() ){
+      index = _history.size() - 1;
+    }
+  }
+
+  _historyIdx = index;
+  retrieveHistory();
+  return;
+}
+
 }
 
 // This function adds the string in _readBuf to the _history.
@@ -290,7 +363,35 @@ void CmdParser::moveToHistory(int index)
 //
 void CmdParser::addHistory()
 {
-  // TODO...
+  // TODO... done
+
+  char* ptr_start = nullptr;
+  char* ptr_end = nullptr;
+
+  for( ptr_end = _readBufEnd-1; isspace(*ptr_end) && ( ptr_end >= _readBuf );
+      ptr_end -- ) {}
+  if( ptr_end <= _readBuf ){
+    return ;
+  }
+  for( ptr_start = _readBuf; isspace(*ptr_start) && ( ptr_start < _readBufEnd );
+      ptr_start ++ ){}
+  if( ptr_start >= _readBufEnd ){
+    return;
+  }
+  if( ptr_end <= ptr_start ){
+    return ;
+  }
+
+  if( _tempCmdStored ){
+    // discard last element in _history, using what in buffer instead.
+    _history.pop_back();
+  }
+  _history.push_back( (string) ( ptr_start, ptr_end - ptr_start ) );
+
+  deleteLine();
+  _historyIdx = _history.size();
+  _tempCmdStored = false;
+
 }
 
 // 1. Replace current line with _history[_historyIdx] on the screen

@@ -34,14 +34,14 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +0 cmdReader.cpp
-badd +0 cmdParser.h
-badd +0 main.cpp
+badd +346 cmdReader.cpp
+badd +79 cmdParser.h
+badd +1 main.cpp
 argglobal
 silent! argdel *
 argadd cmdReader.cpp
 set stal=2
-edit cmdParser.h
+edit cmdReader.cpp
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -165,12 +165,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 25 - ((24 * winheight(0) + 20) / 40)
+let s:l = 304 - ((19 * winheight(0) + 20) / 40)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-25
-normal! 07|
+304
+normal! 0
 wincmd w
 argglobal
 edit cmdReader.cpp
@@ -285,12 +285,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 233 - ((31 * winheight(0) + 20) / 40)
+let s:l = 314 - ((5 * winheight(0) + 20) / 40)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-233
-normal! 016|
+314
+normal! 017|
 wincmd w
 2wincmd w
 exe 'vert 1resize ' . ((&columns * 86 + 87) / 174)
@@ -537,12 +537,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 219 - ((34 * winheight(0) + 20) / 40)
+let s:l = 402 - ((33 * winheight(0) + 20) / 40)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-219
-normal! 07|
+402
+normal! 017|
 tabnext 1
 set stal=1
 if exists('s:wipebuf')
