@@ -66,7 +66,7 @@ linux mac:
 	@ln -sf cmdReader.o.$@ cmdReader.o.ref
 
 clean:
-	rm -f *.o cmdReader testAsc
+	rm -f *.o cmdReader testAsc cmdReader-ref
 
 ctags:
 	ctags *.cpp *.h

@@ -15,60 +15,102 @@ using namespace std;
 //    Extrenal funcitons
 //----------------------------------------------------------------------
 void mybeep();
-char mygetc(istream&);
-ParseChar getChar(istream&);
-
+char mygetc(istream &);
+ParseChar getChar(istream &);
 
 //----------------------------------------------------------------------
 //    Member Function for class Parser
 //----------------------------------------------------------------------
-void
-CmdParser::readCmd()
+void CmdParser::readCmd()
 {
-   if (_dofile.is_open()) {
-      readCmdInt(_dofile);
-      _dofile.close();
-   }
-   else
-      readCmdInt(cin);
+  if (_dofile.is_open())
+  {
+    readCmdInt(_dofile);
+    _dofile.close();
+  }
+  else
+    readCmdInt(cin);
 }
 
-void
-CmdParser::readCmdInt(istream& istr)
+void CmdParser::readCmdInt(istream &istr)
 {
-   resetBufAndPrintPrompt();
+  resetBufAndPrintPrompt();
 
-   while (1) {
-      ParseChar pch = getChar(istr);
-      if (pch == INPUT_END_KEY) break;
-      switch (pch) {
-         case LINE_BEGIN_KEY :
-         case HOME_KEY       : moveBufPtr(_readBuf); break;
-         case LINE_END_KEY   :
-         case END_KEY        : moveBufPtr(_readBufEnd); break;
-         case BACK_SPACE_KEY : /* TODO */ break;
-         case DELETE_KEY     : deleteChar(); break;
-         case NEWLINE_KEY    : addHistory();
-                               cout << char(NEWLINE_KEY);
-                               resetBufAndPrintPrompt(); break;
-         case ARROW_UP_KEY   : moveToHistory(_historyIdx - 1); break;
-         case ARROW_DOWN_KEY : moveToHistory(_historyIdx + 1); break;
-         case ARROW_RIGHT_KEY: /* TODO */ break;
-         case ARROW_LEFT_KEY : /* TODO */ break;
-         case PG_UP_KEY      : moveToHistory(_historyIdx - PG_OFFSET); break;
-         case PG_DOWN_KEY    : moveToHistory(_historyIdx + PG_OFFSET); break;
-         case TAB_KEY        : /* TODO */ break;
-         case INSERT_KEY     : // not yet supported; fall through to UNDEFINE
-         case UNDEFINED_KEY:   mybeep(); break;
-         default:  // printable character
-            insertChar(char(pch)); break;
+  while (1)
+  {
+    ParseChar pch = getChar(istr);
+    if (pch == INPUT_END_KEY)
+      break;
+    switch (pch)
+    {
+    case LINE_BEGIN_KEY:
+    case HOME_KEY:
+      moveBufPtr(_readBuf);
+      break;
+    case LINE_END_KEY:
+    case END_KEY:
+      moveBufPtr(_readBufEnd);
+      break;
+    case BACK_SPACE_KEY: /* TODO */ //...done
+      if( _readBufPtr == _readBuf ){
+        mybeep();
+      }else{
+        moveBufPtr( _readBufPtr -1 );
+        deleteChar();
       }
-      #ifdef TA_KB_SETTING
-      taTestOnly();
-      #endif
-   }
+      break;
+    case DELETE_KEY:
+      deleteChar();
+      break;
+    case NEWLINE_KEY:
+      addHistory();
+      cout << char(NEWLINE_KEY);
+      resetBufAndPrintPrompt();
+      break;
+    case ARROW_UP_KEY:
+      moveToHistory(_historyIdx - 1);
+      break;
+    case ARROW_DOWN_KEY:
+      moveToHistory(_historyIdx + 1);
+      break;
+    case ARROW_RIGHT_KEY: /* TODO */ // ...done
+      moveBufPtr( _readBufPtr + 1 );
+      break;
+    case ARROW_LEFT_KEY: /* TODO */ // ...done
+      moveBufPtr( _readBufPtr - 1 );
+      break;
+    case PG_UP_KEY:
+      moveToHistory(_historyIdx - PG_OFFSET);
+      break;
+    case PG_DOWN_KEY:
+      moveToHistory(_historyIdx + PG_OFFSET);
+      break;
+    case TAB_KEY: /* TODO */ // ...done
+      // insert spaces till reach ( n*TAB_POSITION ), where n in natural number.
+      // if it's now at n*TAB_POSITION, insert TAB_POSITION spaces,
+      // so that we have (n+1)*TAB_POSITION characters.
+      int diff = ( _readBufPtr - _readBuf );
+      if( diff % TAB_POSITION ){
+        // insert till reach interger times of TAB_POSITION;
+        diff = ( TAB_POSITION - (diff%TAB_POSITION) );
+        insertChar( ' ', diff );
+      }else{
+        insertChar( ' ', TAB_POSITION );
+      }
+      break;
+    case INSERT_KEY: // not yet supported; fall through to UNDEFINE
+    case UNDEFINED_KEY:
+      mybeep();
+      break;
+    default: // printable character
+      insertChar(char(pch));
+      break;
+    }
+#ifdef TA_KB_SETTING
+    taTestOnly();
+#endif
+  }
 }
-
 
 // This function moves _readBufPtr to the "ptr" pointer
 // It is used by left/right arrowkeys, home/end, etc.
@@ -82,13 +124,36 @@ CmdParser::readCmdInt(istream& istr)
 //
 // [Note] This function can also be called by other member functions below
 //        to move the _readBufPtr to proper position.
-bool
-CmdParser::moveBufPtr(char* const ptr)
+bool CmdParser::moveBufPtr(char *const ptr)
 {
-   // TODO...
-   return true;
-}
+  // TODO... done;
+  if (ptr < _readBuf || ptr > _readBufEnd)
+  {
+    mybeep();
+    return false;
+  }
 
+  if (ptr < _readBufPtr)
+  {
+    // use (char)8 to move backwards;
+    while( _readBufPtr != ptr ){
+      cout << (char)8;
+      _readBufPtr --;
+    }
+    cout << flush;
+  }
+  else if (ptr > _readBufPtr)
+  {
+    // use information in our _readBuf[];
+    while (_readBufPtr != ptr)
+    {
+      cout << *_readBufPtr;
+      _readBufPtr++;
+    }
+    cout << flush;
+  }
+  return true;
+}
 
 // [Notes]
 // 1. Delete the char at _readBufPtr
@@ -109,11 +174,31 @@ CmdParser::moveBufPtr(char* const ptr)
 // cmd> This is he command
 //              ^
 //
-bool
-CmdParser::deleteChar()
+bool CmdParser::deleteChar()
 {
-   // TODO...
-   return true;
+  // TODO... done;
+  if( _readBufPtr == _readBufEnd ){
+    mybeep();
+    return false;
+  }else{
+    memmove( _readBufPtr, _readBufPtr+1, 
+        sizeof(char) * (_readBufEnd - _readBufPtr - 1 ) );
+    // move memory from (next to end) to (here to (end-1));
+    _readBufEnd --;
+    *_readBufPtr = 0;
+    // update _readBufEnd position, reset its data;
+
+    // update screen information.
+    for( char* ptr = _readBufPtr; ptr <= _readBufEnd; ptr ++){
+      cout << ( (*ptr == (char)0 )? ' ': *ptr );
+    }
+    cout << flush;
+    for( char* ptr = _readBufPtr; ptr <= _readBufEnd; ptr ++){
+      cout << (char)8;
+    }
+    cout << flush;
+  }
+  return true;
 }
 
 // 1. Insert character 'ch' for "repeat" times at _readBufPtr
@@ -131,11 +216,22 @@ CmdParser::deleteChar()
 // cmd> This is kkkthe command
 //                 ^
 //
-void
-CmdParser::insertChar(char ch, int repeat)
+void CmdParser::insertChar(char ch, int repeat)
 {
-   // TODO...
-   assert(repeat >= 1);
+  // TODO...
+  assert(repeat >= 1);
+
+  // we'll update screen first, and then deal with buffer.
+
+  // update screen.
+  for( int i = repeat; repeat > 0; repeat -- ){
+    cout << ch;
+  }
+  for( char* ptr = _readBufPtr; ptr < _readBufEnd; ptr ++ ){
+    cout << *ptr;
+  }
+  cout << flush;
+  
 }
 
 // 1. Delete the line that is currently shown on the screen
@@ -152,12 +248,10 @@ CmdParser::insertChar(char ch, int repeat)
 // cmd>
 //      ^
 //
-void
-CmdParser::deleteLine()
+void CmdParser::deleteLine()
 {
-   // TODO...
+  // TODO...
 }
-
 
 // This functions moves _historyIdx to index and display _history[index]
 // on the screen.
@@ -177,15 +271,13 @@ CmdParser::deleteLine()
 //
 // [Note] index should not = _historyIdx
 //
-void
-CmdParser::moveToHistory(int index)
+void CmdParser::moveToHistory(int index)
 {
-   // TODO...
+  // TODO...
 }
 
-
 // This function adds the string in _readBuf to the _history.
-// The size of _history may or may not change. Depending on whether 
+// The size of _history may or may not change. Depending on whether
 // there is a temp history string.
 //
 // 1. Remove ' ' at the beginning and end of _readBuf
@@ -196,23 +288,20 @@ CmdParser::moveToHistory(int index)
 //    and reset _tempCmdStored to false
 // 5. Reset _historyIdx to _history.size() // for future insertion
 //
-void
-CmdParser::addHistory()
+void CmdParser::addHistory()
 {
-   // TODO...
+  // TODO...
 }
-
 
 // 1. Replace current line with _history[_historyIdx] on the screen
 // 2. Set _readBufPtr and _readBufEnd to end of line
 //
 // [Note] Do not change _history.size().
 //
-void
-CmdParser::retrieveHistory()
+void CmdParser::retrieveHistory()
 {
-   deleteLine();
-   strcpy(_readBuf, _history[_historyIdx].c_str());
-   cout << _readBuf;
-   _readBufPtr = _readBufEnd = _readBuf + _history[_historyIdx].size();
+  deleteLine();
+  strcpy(_readBuf, _history[_historyIdx].c_str());
+  cout << _readBuf;
+  _readBufPtr = _readBufEnd = _readBuf + _history[_historyIdx].size();
 }
