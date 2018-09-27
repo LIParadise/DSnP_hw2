@@ -53,11 +53,13 @@ void CmdParser::readCmdInt(istream &istr)
       moveBufPtr(_readBufEnd);
       break;
     case BACK_SPACE_KEY: /* TODO */ //...done
-      if( _readBufPtr == _readBuf ){
-        mybeep();
-      }else{
-        moveBufPtr( _readBufPtr -1 );
-        deleteChar();
+      {
+        if( _readBufPtr == _readBuf ){
+          mybeep();
+        }else{
+          moveBufPtr( _readBufPtr -1 );
+          deleteChar();
+        }
       }
       break;
     case DELETE_KEY:
@@ -90,13 +92,15 @@ void CmdParser::readCmdInt(istream &istr)
       // insert spaces till reach ( n*TAB_POSITION ), where n in natural number.
       // if it's now at n*TAB_POSITION, insert TAB_POSITION spaces,
       // so that we have (n+1)*TAB_POSITION characters.
-      int diff = ( _readBufPtr - _readBuf );
-      if( diff % TAB_POSITION ){
-        // insert till reach interger times of TAB_POSITION;
-        diff = ( TAB_POSITION - (diff%TAB_POSITION) );
-        insertChar( ' ', diff );
-      }else{
-        insertChar( ' ', TAB_POSITION );
+      {
+        int diff = ( _readBufPtr - _readBuf );
+        if( diff % TAB_POSITION ){
+          // insert till reach interger times of TAB_POSITION;
+          diff = ( TAB_POSITION - (diff%TAB_POSITION) );
+          insertChar( ' ', diff );
+        }else{
+          insertChar( ' ', TAB_POSITION );
+        }
       }
       break;
     case INSERT_KEY: // not yet supported; fall through to UNDEFINE
@@ -141,17 +145,15 @@ bool CmdParser::moveBufPtr(char *const ptr)
       cout << (char)8;
       _readBufPtr --;
     }
-    cout << flush;
   }
   else if (ptr > _readBufPtr)
   {
     // use information in our _readBuf[];
-    while (_readBufPtr != ptr)
+    while (_readBufPtr <= ptr)
     {
-      cout << *_readBufPtr;
+      cout << ' ';
       _readBufPtr++;
     }
-    cout << flush;
   }
   return true;
 }
@@ -183,21 +185,20 @@ bool CmdParser::deleteChar()
     return false;
   }else{
     memmove( _readBufPtr, _readBufPtr+1, 
-        sizeof(char) * (_readBufEnd - _readBufPtr - 1 ) );
+        sizeof(char) * (_readBufEnd - _readBufPtr ) );
     // move memory from (next to end) to (here to (end-1));
     _readBufEnd --;
-    *_readBufPtr = 0;
+    *_readBufEnd = 0;
     // update _readBufEnd position, reset its data;
 
     // update screen information.
-    for( char* ptr = _readBufPtr; ptr <= _readBufEnd; ptr ++){
-      cout << ( (*ptr == (char)0 )? ' ': *ptr );
+    for( char* ptr = _readBufPtr; ptr < _readBufEnd; ptr ++){
+      cout << *ptr;
     }
-    cout << flush;
+    cout << ' ';
     for( char* ptr = _readBufPtr; ptr <= _readBufEnd; ptr ++){
       cout << (char)8;
     }
-    cout << flush;
   }
   return true;
 }
@@ -244,7 +245,6 @@ void CmdParser::insertChar(char ch, int repeat)
   for( char* ptr = _readBufPtr; ptr < _readBufEnd; ptr ++ ){
     cout << *ptr;
   }
-  cout << flush;
 
   // maintain buffer.
   memmove( _readBufPtr+repeat, _readBufPtr, 
@@ -280,11 +280,9 @@ void CmdParser::deleteLine()
   for( int i = 0; i <= ( _readBufEnd - _readBuf ); i++ ){
     cout << ' ';
   }
-  cout << flush;
   for( int i = 0; i <= ( _readBufEnd - _readBuf ); i++ ){
     cout << (char)8 ; 
   }
-  cout << flush;
   _readBufEnd = _readBuf;
   _readBufPtr = _readBuf;
   memset( _readBuf, 0, sizeof(char) * READ_BUF_SIZE );
@@ -347,7 +345,6 @@ void CmdParser::moveToHistory(int index)
   return;
 }
 
-}
 
 // This function adds the string in _readBuf to the _history.
 // The size of _history may or may not change. Depending on whether
@@ -386,7 +383,7 @@ void CmdParser::addHistory()
     // discard last element in _history, using what in buffer instead.
     _history.pop_back();
   }
-  _history.push_back( (string) ( ptr_start, ptr_end - ptr_start ) );
+  _history.push_back( string( ptr_start, ptr_end - ptr_start ) );
 
   deleteLine();
   _historyIdx = _history.size();

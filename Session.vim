@@ -26,6 +26,7 @@ set statusline=%F
 set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
 set tabline=%!Tabline()
 set tabstop=2
+set window=41
 let s:so_save = &so | let s:siso_save = &siso | set so=0 siso=0
 let v:this_session=expand("<sfile>:p")
 silent only
@@ -51,8 +52,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 86 + 87) / 174)
-exe 'vert 2resize ' . ((&columns * 87 + 87) / 174)
+exe 'vert 1resize ' . ((&columns * 83 + 83) / 167)
+exe 'vert 2resize ' . ((&columns * 83 + 83) / 167)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -165,12 +166,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 304 - ((19 * winheight(0) + 20) / 40)
+let s:l = 155 - ((29 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-304
-normal! 0
+155
+normal! 017|
 wincmd w
 argglobal
 edit cmdReader.cpp
@@ -285,16 +286,15 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 314 - ((5 * winheight(0) + 20) / 40)
+let s:l = 283 - ((13 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-314
-normal! 017|
+283
+normal! 03|
 wincmd w
-2wincmd w
-exe 'vert 1resize ' . ((&columns * 86 + 87) / 174)
-exe 'vert 2resize ' . ((&columns * 87 + 87) / 174)
+exe 'vert 1resize ' . ((&columns * 83 + 83) / 167)
+exe 'vert 2resize ' . ((&columns * 83 + 83) / 167)
 tabedit main.cpp
 set splitbelow splitright
 set nosplitbelow
@@ -413,7 +413,7 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 36 - ((1 * winheight(0) + 20) / 40)
+let s:l = 36 - ((1 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -537,11 +537,11 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 402 - ((33 * winheight(0) + 20) / 40)
+let s:l = 405 - ((32 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-402
+405
 normal! 017|
 tabnext 1
 set stal=1
