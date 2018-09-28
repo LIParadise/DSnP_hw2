@@ -313,40 +313,61 @@ void CmdParser::deleteLine()
 //
 void CmdParser::moveToHistory(int index)
 {
-  // TODO... done
+  // TODO... shall be done?
+  if( !_tempCmdStored ){
 
-  if( index < _historyIdx ){
-    // moving up...
+    assert( _historyIdx == _history.size () );
 
-    if( _historyIdx == 0 ){
+    if( index > _historyIdx ){
       mybeep();
       return;
-    }else if( index < 0 ){
-      index = 0;
-    }
-    _tempCmdStored = true;
-    _history.push_back( (string) _readBuf );
-
-  }else if( index > _historyIdx ){
-    // moving down...
-    if( _historyIdx == _history.size() ){
+    }else if( _historyIdx == 0 && index < 0 ){
       mybeep();
-      assert( _tempCmdStored == false );
+      return;
     }else{
-      assert( _tempCmdStored == true  );
+      // index inside good range;
+      if( index < 0 )
+        index = 0;
+      _tempCmdStored = true;
+      _history.push_back( string( _readBuf ) );
+      _historyIdx = index;
+      deleteLine();
+      retrieveHistory();
     }
 
-    if( _historyIdx == _history.size() - 1 ){
+
+  }else{ // _tempCmdStored == true;
+
+    assert( _history.size() > 1 );
+    // there must exist "genuine history" and "temp history"
+    // if there's no genuine history, we won't need the temp one.
+    assert( _historyIdx < _history.size()-1 );
+    // there shall be temporary string at _history[ size-1 ];
+    // when we want to retrieve it, just pop it and set _tempCmdStored
+    // to false, reset _historyIdx to _history.size();
+
+    if( index == _history.size()-1 ){
+      // retrieve temp, pop it from _history;
+      deleteLine();
+      _historyIdx = index;
+      retrieveHistory();
+      _tempCmdStored = false;
+      _history.pop_back();
+    }else if( _historyIdx == 0 && index < 0 ){
       mybeep();
       return;
-    }else if( index >= _history.size() ){
-      index = _history.size() - 1;
+    }else{
+      // index in range
+      if( index < 0 ){
+        index = 0;
+      }
+      deleteLine();
+      _historyIdx = index;
+      retrieveHistory();
     }
-  }
 
-  _historyIdx = index;
-  retrieveHistory();
-  return;
+  } // if( !_tempCmdStored ){} else {}
+
 }
 
 

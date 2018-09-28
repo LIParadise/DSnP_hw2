@@ -26,7 +26,6 @@ set statusline=%F
 set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
 set tabline=%!Tabline()
 set tabstop=2
-set window=41
 let s:so_save = &so | let s:siso_save = &siso | set so=0 siso=0
 let v:this_session=expand("<sfile>:p")
 silent only
@@ -52,8 +51,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 96 + 96) / 192)
-exe 'vert 2resize ' . ((&columns * 95 + 96) / 192)
+exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
+exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -166,12 +165,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 296 - ((0 * winheight(0) + 23) / 47)
+let s:l = 296 - ((0 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 296
-normal! 0
+normal! 07|
 wincmd w
 argglobal
 edit cmdReader.cpp
@@ -286,15 +285,16 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 297 - ((0 * winheight(0) + 23) / 47)
+let s:l = 316 - ((20 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-297
-normal! 0
+316
+normal! 027|
 wincmd w
-exe 'vert 1resize ' . ((&columns * 96 + 96) / 192)
-exe 'vert 2resize ' . ((&columns * 95 + 96) / 192)
+2wincmd w
+exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
+exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
 tabedit main.cpp
 set splitbelow splitright
 set nosplitbelow
@@ -413,7 +413,7 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 36 - ((1 * winheight(0) + 23) / 47)
+let s:l = 36 - ((1 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -537,11 +537,11 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 406 - ((40 * winheight(0) + 23) / 47)
+let s:l = 427 - ((33 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-406
+427
 normal! 0
 tabnext 1
 set stal=1
