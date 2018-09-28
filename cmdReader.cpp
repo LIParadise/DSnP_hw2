@@ -149,9 +149,9 @@ bool CmdParser::moveBufPtr(char *const ptr)
   else if (ptr > _readBufPtr)
   {
     // use information in our _readBuf[];
-    while (_readBufPtr <= ptr)
+    while (_readBufPtr < ptr)
     {
-      cout << ' ';
+      cout << *_readBufPtr;
       _readBufPtr++;
     }
   }
@@ -196,7 +196,8 @@ bool CmdParser::deleteChar()
       cout << *ptr;
     }
     cout << ' ';
-    for( char* ptr = _readBufPtr; ptr <= _readBufEnd; ptr ++){
+    cout << '\b';
+    for( char* ptr = _readBufPtr; ptr < _readBufEnd; ptr ++){
       cout << (char)8;
     }
   }
@@ -233,7 +234,7 @@ void CmdParser::insertChar(char ch, int repeat)
   if( repeat > remaining ){
     mybeep();
     repeat = remaining;
-    if( repeat == 0 ){
+    if( remaining == 0 ){
       return ;
     }
   }
@@ -244,6 +245,9 @@ void CmdParser::insertChar(char ch, int repeat)
   }
   for( char* ptr = _readBufPtr; ptr < _readBufEnd; ptr ++ ){
     cout << *ptr;
+  }
+  for( char* ptr = _readBufPtr; ptr < _readBufEnd; ptr ++ ){
+    cout << '\b';
   }
 
   // maintain buffer.

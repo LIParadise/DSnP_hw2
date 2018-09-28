@@ -52,8 +52,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 83 + 83) / 167)
-exe 'vert 2resize ' . ((&columns * 83 + 83) / 167)
+exe 'vert 1resize ' . ((&columns * 96 + 96) / 192)
+exe 'vert 2resize ' . ((&columns * 95 + 96) / 192)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -166,12 +166,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 155 - ((29 * winheight(0) + 19) / 39)
+let s:l = 353 - ((0 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-155
-normal! 017|
+353
+normal! 0
 wincmd w
 argglobal
 edit cmdReader.cpp
@@ -286,15 +286,16 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 283 - ((13 * winheight(0) + 19) / 39)
+let s:l = 353 - ((0 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-283
-normal! 03|
+353
+normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 83 + 83) / 167)
-exe 'vert 2resize ' . ((&columns * 83 + 83) / 167)
+2wincmd w
+exe 'vert 1resize ' . ((&columns * 96 + 96) / 192)
+exe 'vert 2resize ' . ((&columns * 95 + 96) / 192)
 tabedit main.cpp
 set splitbelow splitright
 set nosplitbelow
@@ -413,7 +414,7 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 36 - ((1 * winheight(0) + 19) / 39)
+let s:l = 36 - ((1 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -537,12 +538,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 405 - ((32 * winheight(0) + 19) / 39)
+let s:l = 405 - ((39 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 405
-normal! 017|
+normal! 01|
 tabnext 1
 set stal=1
 if exists('s:wipebuf')
