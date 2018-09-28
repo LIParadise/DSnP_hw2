@@ -165,12 +165,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 296 - ((0 * winheight(0) + 19) / 39)
+let s:l = 368 - ((18 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-296
-normal! 07|
+368
+normal! 0
 wincmd w
 argglobal
 edit cmdReader.cpp
@@ -285,12 +285,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 316 - ((20 * winheight(0) + 19) / 39)
+let s:l = 411 - ((20 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-316
-normal! 027|
+411
+normal! 03|
 wincmd w
 2wincmd w
 exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
@@ -537,11 +537,11 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 427 - ((33 * winheight(0) + 19) / 39)
+let s:l = 424 - ((33 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-427
+424
 normal! 0
 tabnext 1
 set stal=1

@@ -331,7 +331,6 @@ void CmdParser::moveToHistory(int index)
       _tempCmdStored = true;
       _history.push_back( string( _readBuf ) );
       _historyIdx = index;
-      deleteLine();
       retrieveHistory();
     }
 
@@ -348,7 +347,6 @@ void CmdParser::moveToHistory(int index)
 
     if( index == _history.size()-1 ){
       // retrieve temp, pop it from _history;
-      deleteLine();
       _historyIdx = index;
       retrieveHistory();
       _tempCmdStored = false;
@@ -361,7 +359,6 @@ void CmdParser::moveToHistory(int index)
       if( index < 0 ){
         index = 0;
       }
-      deleteLine();
       _historyIdx = index;
       retrieveHistory();
     }
