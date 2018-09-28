@@ -334,7 +334,6 @@ void CmdParser::moveToHistory(int index)
       retrieveHistory();
     }
 
-
   }else{ // _tempCmdStored == true;
 
     assert( _history.size() > 1 );
@@ -345,8 +344,10 @@ void CmdParser::moveToHistory(int index)
     // when we want to retrieve it, just pop it and set _tempCmdStored
     // to false, reset _historyIdx to _history.size();
 
-    if( index == _history.size()-1 ){
+    if( index >= _history.size()-1 ){
       // retrieve temp, pop it from _history;
+      assert( _historyIdx < _history.size()-1 );
+      index = _history.size() - 1 ;
       _historyIdx = index;
       retrieveHistory();
       _tempCmdStored = false;
