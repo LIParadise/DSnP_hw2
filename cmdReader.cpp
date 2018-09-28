@@ -408,7 +408,6 @@ void CmdParser::addHistory()
   _history.push_back( string( ptr_start, ptr_back - ptr_start + 1) );
   // (*(ptr_back)+1) shall be the 0 preceding a cstring;
 
-  deleteLine();
   _historyIdx = _history.size();
   _tempCmdStored = false;
 
