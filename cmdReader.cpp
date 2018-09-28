@@ -367,11 +367,11 @@ void CmdParser::addHistory()
   // TODO... done
 
   char* ptr_start = nullptr;
-  char* ptr_end = nullptr;
+  char* ptr_back = nullptr;
 
-  for( ptr_end = _readBufEnd-1; isspace(*ptr_end) && ( ptr_end >= _readBuf );
-      ptr_end -- ) {}
-  if( ptr_end <= _readBuf ){
+  for( ptr_back = _readBufEnd-1; isspace(*ptr_back) && ( ptr_back >= _readBuf );
+      ptr_back -- ) {}
+  if( ptr_back < _readBuf ){
     return ;
   }
   for( ptr_start = _readBuf; isspace(*ptr_start) && ( ptr_start < _readBufEnd );
@@ -379,7 +379,7 @@ void CmdParser::addHistory()
   if( ptr_start >= _readBufEnd ){
     return;
   }
-  if( ptr_end <= ptr_start ){
+  if( ptr_back < ptr_start ){
     return ;
   }
 
@@ -387,7 +387,8 @@ void CmdParser::addHistory()
     // discard last element in _history, using what in buffer instead.
     _history.pop_back();
   }
-  _history.push_back( string( ptr_start, ptr_end - ptr_start ) );
+  _history.push_back( string( ptr_start, ptr_back - ptr_start + 1) );
+  // (*(ptr_back)+1) shall be the 0 preceding a cstring;
 
   deleteLine();
   _historyIdx = _history.size();

@@ -286,12 +286,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 353 - ((0 * winheight(0) + 23) / 47)
+let s:l = 382 - ((29 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-353
-normal! 0
+382
+normal! 017|
 wincmd w
 2wincmd w
 exe 'vert 1resize ' . ((&columns * 96 + 96) / 192)
@@ -538,12 +538,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 405 - ((39 * winheight(0) + 23) / 47)
+let s:l = 406 - ((40 * winheight(0) + 23) / 47)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-405
-normal! 01|
+406
+normal! 0
 tabnext 1
 set stal=1
 if exists('s:wipebuf')
