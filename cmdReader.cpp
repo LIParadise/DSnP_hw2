@@ -145,6 +145,7 @@ bool CmdParser::moveBufPtr(char *const ptr)
       cout << (char)8;
       _readBufPtr --;
     }
+    cout << flush;
   }
   else if (ptr > _readBufPtr)
   {
@@ -154,6 +155,7 @@ bool CmdParser::moveBufPtr(char *const ptr)
       cout << *_readBufPtr;
       _readBufPtr++;
     }
+    cout << flush;
   }
   return true;
 }
@@ -197,9 +199,11 @@ bool CmdParser::deleteChar()
     }
     cout << ' ';
     cout << '\b';
+    cout << flush;
     for( char* ptr = _readBufPtr; ptr < _readBufEnd; ptr ++){
       cout << (char)8;
     }
+    cout << flush;
   }
   return true;
 }
@@ -243,12 +247,15 @@ void CmdParser::insertChar(char ch, int repeat)
   for( int i = 0; i < repeat; i++ ){
     cout << ch;
   }
+  cout << flush;
   for( char* ptr = _readBufPtr; ptr < _readBufEnd; ptr ++ ){
     cout << *ptr;
   }
+  cout << flush;
   for( char* ptr = _readBufPtr; ptr < _readBufEnd; ptr ++ ){
     cout << '\b';
   }
+  cout << flush;
 
   // maintain buffer.
   memmove( _readBufPtr+repeat, _readBufPtr, 
@@ -284,9 +291,11 @@ void CmdParser::deleteLine()
   for( int i = 0; i <= ( _readBufEnd - _readBuf ); i++ ){
     cout << ' ';
   }
+  cout << flush;
   for( int i = 0; i <= ( _readBufEnd - _readBuf ); i++ ){
     cout << (char)8 ; 
   }
+  cout << flush;
   _readBufEnd = _readBuf;
   _readBufPtr = _readBuf;
   memset( _readBuf, 0, sizeof(char) * READ_BUF_SIZE );
