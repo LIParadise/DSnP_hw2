@@ -344,15 +344,19 @@ void CmdParser::moveToHistory(int index)
     // when we want to retrieve it, just pop it and set _tempCmdStored
     // to false, reset _historyIdx to _history.size();
 
+    /*
     if( index >= _history.size()-1 ){
       // retrieve temp, pop it from _history;
-      assert( _historyIdx < _history.size()-1 );
+      assert( _historyIdx < _history.size()-1 && 
+          "error while moving downwards in moveToHistory" );
       index = _history.size() - 1 ;
       _historyIdx = index;
       retrieveHistory();
       _tempCmdStored = false;
       _history.pop_back();
     }else if( _historyIdx == 0 && index < 0 ){
+      _historyIdx = index = 0;
+      retrieveHistory();
       mybeep();
       return;
     }else{
@@ -363,8 +367,46 @@ void CmdParser::moveToHistory(int index)
       _historyIdx = index;
       retrieveHistory();
     }
+    */
 
-  } // if( !_tempCmdStored ){} else {}
+    if( index > _historyIdx ){
+      // trying to move to newer history
+
+      if( index >= _history.size()-1 ){
+        // retrieve temp, pop it from _history;
+        assert( _historyIdx < _history.size()-1 && 
+            "error while moving downwards in moveToHistory" );
+        index = _history.size() - 1 ;
+        _historyIdx = index;
+        retrieveHistory();
+        _tempCmdStored = false;
+        _history.pop_back();
+      }else{
+        // index still inside permanent history range;
+        _historyIdx = index;
+        retrieveHistory();
+        _tempCmdStored = true;
+      }
+    }else{ // index <= _historyIdx;
+
+      assert( _historyIdx != index &&
+          "(_historyIdx == index) inside function moveToHistory, weird" );
+
+      if( _historyIdx == 0 ){
+        // beep, do nothing.
+        mybeep();
+        return;
+      }else{
+        // index still inside permanent history range;
+        if( index < 0 ){
+          index = 0;
+        }
+        _historyIdx = index;
+        retrieveHistory();
+      }
+    } // fi (index > _historyIdx ) {} else {}
+
+  } // fi ( !_tempCmdStored ){} else {}
 
 }
 
